@@ -37,8 +37,8 @@
                         <div class="label">
                             <span class="label-text font-semibold">Escolher uma emoção prévia</span>
                         </div>
-                        <select class="select select-bordered" name="emocaoPrevia">
-                            <option disabled selected value="0">-------</option>
+                        <select class="select select-bordered" id="emocaoPrevia">
+                            <option selected value="-">-------</option>
                         </select>
                     </label>
                 </div>
@@ -48,13 +48,13 @@
                         <div class="label">
                             <span class="label-text font-semibold">Qual foi a emoção?</span>
                         </div>
-                        <input required type="emocao" name="emocao" class="input input-bordered w-full max-w-xs" />
+                        <input id="emocao" required type="emocao" name="emocao" class="input input-bordered w-full" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text font-semibold">Qual a cor ilustrativa?</span>
                         </div>
-                        <input type="color" name="cor" value="#ffffff" class="input input-bordered w-full max-w-xs">
+                        <input id="cor" type="color" name="cor" value="#ffffff" class="input input-bordered w-full">
                     </label>
                 </div>
             </div>
@@ -85,6 +85,14 @@
                 <button type="submit" class="btn btn-primary">Gravar</button>
             </div>
         </form>
+    </div>
+    <div class="toast toast-top toast-center">
+        <div class="hidden alert alert-error">
+            <span id="errAlert"></span>
+        </div>
+        <div class="hidden alert alert-success">
+            <span id="okAlert"></span>
+        </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script>
