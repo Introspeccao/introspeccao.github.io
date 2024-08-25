@@ -10,25 +10,17 @@ $(async function () {
     });
 
     let timer;
-    const getAlert = function (erro) {
-
-        return (erro ? $('#errAlert') : $('#okAlert'));
-    }
-    const removeAlert = function (erro) {
-        const element = getAlert(erro);
-        if (timer) clearTimeout(timer);
-        element.text('').parent().addClass('hidden');
-        element.parent().off('click');
-    }
-    const showAlert = function (text, erro) {
-        const element = getAlert(erro);
-        element.text(text).parent().removeClass('hidden');
-        timer = setTimeout(removeAlert.bind(this), 3500);
-        element.parent().on('click', function (e) {
-            e.preventDefault();
-            removeAlert(erro);
-        });
-    }
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
 
     if ($("#lista").length > 0) {
         const template = '<div class="collapse collapse-plus bg-base-100 my-8">\n' +
@@ -37,9 +29,9 @@ $(async function () {
             '  <div class="collapse-content">\n' +
             '     <h3 class="font-semibold">Como estava quando senti?</h3>\n' +
             '     <p class="w-full">{ESTAVA}</p>\n' +
-            '     <h3 class="font-semibold mt-4">O que senti no meu corpo?</h3>\n' +
+            '     <h3 class="font-semibold mt-6">O que senti no meu corpo?</h3>\n' +
             '     <p class="w-full">{SENTI}</p>\n' +
-            '     <h3 class="font-semibold mt-4">O que pensei sobre mim?</h3>\n' +
+            '     <h3 class="font-semibold mt-6">O que pensei sobre mim?</h3>\n' +
             '     <p class="w-full">{PENSEI}</p>\n' +
             '     <div class="flex justify-end mt-8" data-ide="{IDE}">\n' +
             '       <button class="btn btn-primary mr-4 editar">Editar</button>\n' +
@@ -71,10 +63,37 @@ $(async function () {
 
         $("#lista").on('click', '.apagar', function (e) {
             e.preventDefault();
+            const self = $(e.target).parent();
+            const ide  = self.data('ide');
 
-            if (confirm("Tem a certeza?")) {
-
-            }
+            Swal.fire({
+                title: "Tem a certeza?",
+                text: "Irá apagar o registo definitivamente",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Apagar",
+                cancelButtonText: "Cancelar"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const deleteCount = await db.emocoes.where("id").equals(ide).delete();
+                    if (deleteCount > 0)  {
+                        self.parent().parent().hide();
+                    }
+                    else {
+                        Toast.fire({
+                            icon: "error",
+                            title: "Ocorreu um erro ao apagar o registo"
+                        });
+                    }
+                }
+            });
+        });
+        $("#lista").on('click', '.editar', function (e) {
+            e.preventDefault();
+            const ide            = $(e.target).parent().data('ide');
+            window.location.href = "/emocao.html#" + String(ide);
         });
     }
 
@@ -104,10 +123,6 @@ $(async function () {
         emoSel.on('change', function (e) {
             e.preventDefault();
             const self = $(this).find('option:selected');
-
-            console.log(self.data('cor'));
-            console.log(self.data('emocao'));
-
             $("#emocao").val(self.data('emocao'));
             $("#cor").val(self.data('cor'));
         });
@@ -152,7 +167,10 @@ $(async function () {
                 if (result === 1) $(this).reset();
             }
 
-            showAlert(message, (result === 0));
+            Toast.fire({
+                icon: (result === 0 ? "error" : "success") ,
+                title: message
+            });
         });
     }
 });

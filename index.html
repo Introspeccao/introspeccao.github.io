@@ -3,10 +3,9 @@
     <title>Retrospectiva</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="css/geral.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="img/brain.svg" type="image/svg+xml">
+    <script src="https://cdn.jsdelivr.net/npm/headjs@1.0.3/dist/1.0.0/head.min.js"></script>
+    <style> body { opacity: 0; } </style>
 </head>
 <body>
     <div class="md:container md:mx-auto md:my-40">
@@ -46,5 +45,14 @@
             </div>
         </div>
     </div>
+    <script>
+        head.js(
+            'https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css',
+            'https://cdn.tailwindcss.com',
+            function () {
+                head.js('css/geral.css');
+            }
+        );
+    </script>
 </body>
 </html>
