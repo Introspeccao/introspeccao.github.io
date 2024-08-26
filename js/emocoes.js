@@ -21,9 +21,10 @@ $(async function () {
             toast.onmouseleave = Swal.resumeTimer;
         }
     });
+    const ide   = parseInt(window.location.hash.replace('#', ''));
 
     if ($("#lista").length > 0) {
-        const template = '<div class="collapse collapse-plus bg-base-100 my-8">\n' +
+        const template = '<div id="emo{IDE}" class="collapse collapse-plus bg-base-100 my-8">\n' +
             '  <input type="checkbox" name="accordion-emocao" />\n' +
             '  <div class="collapse-title text-md font-semibold">{DATA} - {EMO}</div>\n' +
             '  <div class="collapse-content">\n' +
@@ -34,8 +35,8 @@ $(async function () {
             '     <h3 class="font-semibold mt-6">O que pensei sobre mim?</h3>\n' +
             '     <p class="w-full">{PENSEI}</p>\n' +
             '     <div class="flex justify-end mt-8" data-ide="{IDE}">\n' +
-            '       <button class="btn btn-primary mr-4 editar">Editar</button>\n' +
-            '       <button class="btn btn-secondary apagar">Apagar</button>\n' +
+            '       <button class="btn btn-secondary mr-4 apagar">Apagar</button>\n' +
+            '       <button class="btn btn-primary editar">Editar</button>\n' +
             '     <div>\n' +
             '  </div>\n' +
             '</div>';
@@ -49,15 +50,15 @@ $(async function () {
             $("#listaPlaceholder").removeClass("hidden");
         }
 
-        emocoes.forEach((emo) => {
+        await emocoes.forEach((emo) => {
             $("#lista").append(
                 template
-                    .replace("{DATA}", emo.data.toISOString().replace('T', ' ').replace(/\:\d{2}\.\w+$/gm, ''))
-                    .replace("{EMO}", emo.emocao)
-                    .replace("{ESTAVA}", emo.estava)
-                    .replace("{SENTI}", emo.senti)
-                    .replace("{PENSEI}", emo.pensei)
-                    .replace("{IDE}", emo.id)
+                    .replace(/{DATA}/g, emo.data.toISOString().replace('T', ' ').replace(/\:\d{2}\.\w+$/gm, ''))
+                    .replace(/{EMO}/g, emo.emocao)
+                    .replace(/{ESTAVA}/g, emo.estava)
+                    .replace(/{SENTI}/g, emo.senti)
+                    .replace(/{PENSEI}/g, emo.pensei)
+                    .replace(/{IDE}/g, emo.id)
             );
         });
 
@@ -95,11 +96,18 @@ $(async function () {
             const ide            = $(e.target).parent().data('ide');
             window.location.href = "/emocao.html#" + String(ide);
         });
+
+        if (ide > 0) {
+            $("#emo" + String(ide)).find('input[type="checkbox"]').prop('checked', true);
+
+            $('html, body').animate({
+                scrollTop: $("#emo" + String(ide)).find('input[type="checkbox"]').offset().top
+            }, 400);
+        }
     }
 
     if ($("#emoForm").length > 0) {
         const emoSel = $("#emocaoPrevia");
-        const ide    = parseInt(window.location.hash.replace('#', ''));
         let emocoes  = await db.emocoes.reverse().sortBy('emocao');
 
         emocoes = emocoes.map(item => {
@@ -136,6 +144,43 @@ $(async function () {
             $("#emoSelect, div.divider").hide();
             $("#imoInputs > label, #imoInputs > label > input").removeClass('max-w-xs');
             $("#editButtons").removeClass('hidden');
+
+            //load dos dados
+            const emocao = await db.emocoes.where("id").equals(ide).toArray();
+            $("#emocao").val(emocao[0].emocao);
+            $("#cor").val(emocao[0].cor);
+            $("#estava").val(emocao[0].estava);
+            $("#senti").val(emocao[0].senti);
+            $("#pensei").val(emocao[0].pensei);
+
+            $("#remover").on('click', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: "Tem a certeza?",
+                    text: "Irá apagar o registo definitivamente",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Apagar",
+                    cancelButtonText: "Cancelar"
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        const deleteCount = await db.emocoes.where("id").equals(ide).delete();
+                        if (deleteCount > 0)  {
+                            window.location.href = '/emocoes.html';
+                        }
+                        else {
+                            Toast.fire({
+                                icon: "error",
+                                title: "Ocorreu um erro ao apagar o registo"
+                            });
+                        }
+                    }
+                });
+            });
+            $("#voltar").attr('href', $("#voltar").attr('href') + "#" + String(ide));
         }
         else {
             $("#newButtons").removeClass('hidden');
