@@ -34,6 +34,8 @@ $(async function () {
             '     <p class="w-full">{SENTI}</p>\n' +
             '     <h3 class="font-semibold mt-6">O que pensei sobre mim?</h3>\n' +
             '     <p class="w-full">{PENSEI}</p>\n' +
+            '     <h3 class="font-semibold mt-6">Cor associada:</h3>\n' +
+            '     <span class="cor-lista mt-2 w-full md:w-80 h-10 rounded-md block" style="background-color: {COR};"></span>\n' +
             '     <div class="flex justify-end mt-8" data-ide="{IDE}">\n' +
             '       <button class="btn btn-secondary mr-4 apagar">Apagar</button>\n' +
             '       <button class="btn btn-primary editar">Editar</button>\n' +
@@ -48,6 +50,7 @@ $(async function () {
         }
         else {
             $("#listaPlaceholder").removeClass("hidden");
+            $("#removeAll, #export").parent().hide();
         }
 
         await emocoes.forEach((emo) => {
@@ -59,6 +62,7 @@ $(async function () {
                     .replace(/{SENTI}/g, emo.senti)
                     .replace(/{PENSEI}/g, emo.pensei)
                     .replace(/{IDE}/g, emo.id)
+                    .replace(/{COR}/g, emo.cor)
             );
         });
 
@@ -104,6 +108,30 @@ $(async function () {
                 scrollTop: $("#emo" + String(ide)).find('input[type="checkbox"]').offset().top
             }, 400);
         }
+
+        $("#removeAll").on("click", function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Tem a certeza?",
+                text: "Irá apagar TODOS os registos definitivamente",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Apagar",
+                cancelButtonText: "Cancelar"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await db.emocoes.clear();
+                    window.location.reload();
+                }
+            });
+        });
+        $("#export").on("click", function (e) {
+            e.preventDefault();
+
+        });
     }
 
     if ($("#emoForm").length > 0) {
@@ -141,7 +169,6 @@ $(async function () {
         });
 
         if (ide > 0) {
-            $("#emoSelect, div.divider").hide();
             $("#imoInputs > label, #imoInputs > label > input").removeClass('max-w-xs');
             $("#editButtons").removeClass('hidden');
 
@@ -184,12 +211,17 @@ $(async function () {
         }
         else {
             $("#newButtons").removeClass('hidden');
+
+            if (emocoes.size > 0) {
+                $("#emoSelect, div.divider").removeClass('hidden');
+            }
         }
 
         $("#emoForm").on('submit', async function (e) {
             e.preventDefault();
             let result, message = '';
-            const formDataArray = await $(this).serializeArray().reduce((accumulator, value) => {
+            const self = $(this);
+            const formDataArray = await self.serializeArray().reduce((accumulator, value) => {
                 accumulator[value.name] = value.value;
                 return accumulator;
             }, {});
@@ -209,7 +241,9 @@ $(async function () {
                     : 'Emoção adicionada com sucesso'
                 );
 
-                if (result === 1) $(this).reset();
+                if (result !== 0) {
+                    window.location.href = '/emocoes.html#' + String(result);
+                }
             }
 
             Toast.fire({
