@@ -9,6 +9,88 @@ $(async function () {
         console.error("DB open failed: " + e.stack);
     });
 
+    const formatData = function (date) {
+        return date.toISOString().replace('T', ' ').replace(/\:\d{2}\.\w+$/gm, '');
+    }
+    const gerarPDF = async function (emocoes) {
+        const docDefinition = {
+            pageSize: 'A4',
+            content: [],
+            styles: {
+                header: {
+                    bold: true
+                },
+                normalText: {
+                }
+            },
+            defaultStyle: {
+                fontSize: 16
+            }
+        };
+
+        await emocoes.forEach((emo, index) => {
+            docDefinition.content.push({
+                columns: [
+                    [
+                        { text: 'Data:', style: 'header', margin: [0, 0, 0, 10] },
+                        { text: 'Emoção:', style: 'header', margin: [0, 0, 0, 10] },
+                        { text: 'Cor associada:', style: 'header', margin: [0, 0, 0, 20] }
+                    ],
+                    [
+                        { text: formatData(emo.data), style: 'normalText', margin: [0, 0, 0, 10] },
+                        { text: emo.emocao, style: 'normalText', margin: [0, 0, 0, 10] },
+                        { text: 'XXXXXXXXX',  color: emo.cor, background: emo.cor, margin: [0, 0, 0, 20] },
+                    ]
+                ]
+            });
+            docDefinition.content.push({ text: 'Como estava quando senti?', style: 'header' });
+            docDefinition.content.push({ text: emo.estava, style: 'normalText', margin: [0, 0, 0, 20] });
+            docDefinition.content.push({ text: 'O que senti no meu corpo?', style: 'header' });
+            docDefinition.content.push({ text: emo.senti, style: 'normalText', margin: [0, 0, 0, 20] });
+            docDefinition.content.push({ text: 'O que pensei sobre mim?', style: 'header' });
+            if (index < (emocoes.length - 1)) {
+                docDefinition.content.push({ text: emo.pensei, style: 'normalText', pageBreak: 'after' });
+            }
+            else {
+                docDefinition.content.push({ text: emo.pensei, style: 'normalText' });
+            }
+        });
+
+        pdfMake.createPdf(docDefinition).download();
+    }
+    const gerarExcel = async function (emocoes, format) {
+        const formato = format || 'json';
+        let rows = [];
+
+        emocoes.forEach(emo => {
+            rows.push({
+                a: formatData(emo.data),
+                b: emo.emocao,
+                c: emo.cor,
+                d: emo.estava,
+                e: emo.senti,
+                f: emo.pensei
+            });
+        });
+
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(rows);
+        XLSX.utils.sheet_add_aoa(
+            worksheet,
+            [["Data", "Emoção", "Cor", "Como estava quando senti?", "O que senti no meu corpo?", "O que pensei sobre mim?"]],
+            { origin: "A1" }
+        );
+
+        /*for(let i = 0; i < 6; i++) {
+            const handle = XLSX.utils.encode_cell({r: 0, c: i});
+            // Create new style if cell doesnt have a style yet
+            worksheet[handle].s = { font: { bold: true } };
+        }*/
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Emoções');
+        XLSX.writeFile(workbook, 'exportar.xlsx', { compression: true });
+    }
+
     let timer;
     const Toast = Swal.mixin({
         toast: true,
@@ -56,7 +138,7 @@ $(async function () {
         await emocoes.forEach((emo) => {
             $("#lista").append(
                 template
-                    .replace(/{DATA}/g, emo.data.toISOString().replace('T', ' ').replace(/\:\d{2}\.\w+$/gm, ''))
+                    .replace(/{DATA}/g, formatData(emo.data))
                     .replace(/{EMO}/g, emo.emocao)
                     .replace(/{ESTAVA}/g, emo.estava)
                     .replace(/{SENTI}/g, emo.senti)
@@ -131,6 +213,47 @@ $(async function () {
         $("#export").on("click", function (e) {
             e.preventDefault();
 
+            Swal.fire({
+                title: "Exportar em que formato?",
+                input: "select",
+                inputOptions: {
+                    pdf: "PDF",
+                    xlsx: "XLSX (Excel 2007+)",
+                    xls: "XLS (Excel 97-2004)",
+                    csv: "CSV",
+                    ods: "ODS (OpenOffice)",
+                    json: "JSON (Permite importação)"
+                },
+                inputPlaceholder: "Escolha um formato",
+                showCancelButton: true,
+                confirmButtonText: "Exportar",
+                cancelButtonText: "Cancelar",
+                showLoaderOnConfirm: true,
+                preConfirm: async (format) => {
+                    try {
+                        switch (format) {
+                            case "pdf":
+                                await gerarPDF(emocoes);
+                                break;
+                            default:
+                                await gerarExcel(emocoes, format);
+                                break;
+                        }
+
+                        return true;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Falhou com o erro: ${error}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    /*Swal.fire({
+                        title: `${result.value.login}'s avatar`,
+                        imageUrl: result.value.avatar_url
+                    });*/
+                }
+            });
         });
     }
 
@@ -215,6 +338,10 @@ $(async function () {
             if (emocoes.size > 0) {
                 $("#emoSelect, div.divider").removeClass('hidden');
             }
+        }
+
+        if (emocoes.size === 0 || ide === 0) {
+            $("#emocao, #cor").parent().removeClass('max-w-md');
         }
 
         $("#emoForm").on('submit', async function (e) {

@@ -11,3 +11,11 @@ body {
         opacity: 1;
     }
 }
+
+#template {
+    position: absolute;
+    bottom: -99999px;
+    right: -99999px;
+    width: 500px;
+    height: 500px;
+}
