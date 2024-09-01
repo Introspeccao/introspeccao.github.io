@@ -59,7 +59,7 @@ $(async function () {
         pdfMake.createPdf(docDefinition).download();
     }
     const gerarExcel = async function (emocoes, format) {
-        const formato = format || 'json';
+        const formato = format || 'xlsx';
         let rows = [];
 
         emocoes.forEach(emo => {
@@ -81,14 +81,31 @@ $(async function () {
             { origin: "A1" }
         );
 
-        /*for(let i = 0; i < 6; i++) {
-            const handle = XLSX.utils.encode_cell({r: 0, c: i});
-            // Create new style if cell doesnt have a style yet
-            worksheet[handle].s = { font: { bold: true } };
-        }*/
-
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Emoções');
-        XLSX.writeFile(workbook, 'exportar.xlsx', { compression: true });
+        XLSX.writeFile(workbook, ('exportar.' + formato), { compression: true });
+    }
+    const gerarJSON = async function (emocoes) {
+        const jsonString = JSON.stringify(emocoes.map(emo => {
+            const { id, ...rest } = emo;
+            return rest;
+        }));
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download
+            = 'exportar.json';
+        a.click();
+
+        URL.revokeObjectURL(url);
+    }
+    const emoImport = async function (emocoes) {
+        if (emocoes.length > 0) {
+            emocoes.forEach(emo => {
+
+            });
+        }
     }
 
     let timer;
@@ -96,7 +113,7 @@ $(async function () {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 4000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
@@ -220,8 +237,8 @@ $(async function () {
                     pdf: "PDF",
                     xlsx: "XLSX (Excel 2007+)",
                     xls: "XLS (Excel 97-2004)",
-                    csv: "CSV",
                     ods: "ODS (OpenOffice)",
+                    csv: "CSV",
                     json: "JSON (Permite importação)"
                 },
                 inputPlaceholder: "Escolha um formato",
@@ -235,6 +252,9 @@ $(async function () {
                             case "pdf":
                                 await gerarPDF(emocoes);
                                 break;
+                            case "json":
+                                await gerarJSON(emocoes);
+                                break;
                             default:
                                 await gerarExcel(emocoes, format);
                                 break;
@@ -246,14 +266,47 @@ $(async function () {
                     }
                 },
                 allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    /*Swal.fire({
-                        title: `${result.value.login}'s avatar`,
-                        imageUrl: result.value.avatar_url
-                    });*/
+            });
+        });
+        $("#import").on("click", async function (e) {
+            e.preventDefault();
+
+            const { value: file } = await Swal.fire({
+                title: "Escolher ficheiro",
+                input: "file",
+                inputAttributes: {
+                    "accept": "application/json",
+                    "aria-label": "Importe o seu ficheiro JSON"
                 }
             });
+
+            const reader  = new FileReader();
+            reader.onload = function(event)
+            {
+                const regex = /\[({"emocao":".+","cor":"#.+","estava":".+","senti":".+","pensei":".+","data":"\d+-\d+-\d+T\d+:\d+:\d+.\d+Z"},?)+\]/gm;
+                const fileContent = event.target.result;
+                if (fileContent && fileContent.match(regex)) {
+                    try {
+                        const importData = JSON.parse(fileContent);
+
+                        emoImport(importData);
+                    }
+                    catch (e) {
+                        Toast.fire({
+                            icon: "warning",
+                            title: "Ficheiro com formato inválido"
+                        });
+                    }
+                }
+                else {
+                    Toast.fire({
+                        icon: "warning",
+                        title: "Ficheiro com formato inválido"
+                    });
+                }
+            };
+
+            reader.readAsText(file);
         });
     }
 
