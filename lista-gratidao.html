@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Retrospectiva - Registo de emoções</title>
+    <title>Retrospectiva - Lista de gratidão</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
     <link rel="icon" href="img/brain.svg" type="image/svg+xml">
@@ -18,7 +18,7 @@
                     </a>
                 </div>
                 <div class="flex">
-                    <h1 class="text-lg font-semibold leading-6">Registo de emoções</h1>
+                    <h1 class="text-lg font-semibold leading-6">Lista de gratidão</h1>
                 </div>
                 <div class="flex flex-1 justify-end">
                     <div class="dropdown dropdown-end">
@@ -30,17 +30,15 @@
                         <ul
                                 tabindex="0"
                                 class="menu dropdown-content bg-base-200 rounded-box z-40 mt-4 w-52 p-2 shadow">
-                            <li><a href="/emocao.html">Adicionar</a></li>
-                            <li><a id="export">Exportar</a></li>
-                            <li><a id="import">Importar</a></li>
+                            <li><a id="add">Adicionar</a></li>
                             <li><a id="removeAll">Remover todos</a></li>
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
-        <div class="p-8 bg-neutral md:rounded-b-md" id="lista">
-            <div id="listaPlaceholder" role="alert" class="alert hidden">
+        <div class="p-8 bg-neutral md:rounded-b-md">
+            <div id="listaPlaceholder" role="alert" class="alert">
                 <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -52,8 +50,10 @@
                             stroke-width="2"
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span>Sem emoções para visualizar, introduza a sua primeira!</span>
+                <span>Esta lista é temporária. As informações aqui inseridas serão apagadas automaticamente.</span>
             </div>
+            <ul id="lista" class="list-disc text-xl ml-25">
+            </ul>
         </div>
     </div>
     <script>
@@ -61,16 +61,12 @@
             '//cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css',
             '//cdn.tailwindcss.com',
             '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css',
-            '//cdn.jsdelivr.net/npm/dexie@3/dist/dexie.js',
             '//cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
             '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js',
-            '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/pdfmake.min.js',
-            '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/vfs_fonts.js',
-            '//cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
             function () {
                 head.js(
                     'css/geral.css',
-                    'js/emocoes.js'
+                    'js/gratidao.js'
                 );
             }
         );

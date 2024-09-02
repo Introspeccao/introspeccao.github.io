@@ -12,10 +12,19 @@ body {
     }
 }
 
-#template {
+#lista {
+    margin-left: 25px;
+}
+
+#lista > li {
+    position: relative;
+    margin-bottom: 20px;
+    padding-right: 50px;
+}
+
+#lista > li > svg.remove {
     position: absolute;
-    bottom: -99999px;
-    right: -99999px;
-    width: 500px;
-    height: 500px;
+    right: 0;
+    top: 0;
+    cursor: pointer;
 }
