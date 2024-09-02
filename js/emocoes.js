@@ -102,8 +102,39 @@ $(async function () {
     }
     const emoImport = async function (emocoes) {
         if (emocoes.length > 0) {
-            emocoes.forEach(emo => {
+            const result = {
+                importados: 0,
+                ignorados: 0
+            };
+            for (const [key, emo] of Object.entries(emocoes.map(emo => {
+                const emocao = emo;
+                emocao.data  = new Date(emo.data);
 
+                return emocao;
+            }))) {
+                const emocao = await db.emocoes.where({
+                    'data': emo.data,
+                    'emocao': emo.emocao,
+                    'cor': emo.cor,
+                    'estava': emo.estava,
+                    'senti': emo.senti,
+                    'pensei': emo.pensei
+                }).toArray();
+
+                if (emocao.length === 0) {
+                    db.emocoes.add(emo);
+                    result.importados++;
+                }
+                else {
+                    result.ignorados++;
+                }
+            }
+
+            Toast.fire({
+                'icon': 'info',
+                'title': `Foram ${result.importados} importados com sucesso e ${result.ignorados} ignorados por já existirem.`,
+            }).then(() => {
+                if (result.importados > 0) window.location.reload();
             });
         }
     }
@@ -113,7 +144,7 @@ $(async function () {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 4000,
+        timer: 3000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
