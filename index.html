@@ -2,10 +2,23 @@
 <head>
     <title>Retrospectiva</title>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=devide-width, initial-scale=1.0" />
-    <link rel="icon" href="img/brain.svg" type="image/svg+xml">
+    <meta name="viewport" content="width=devide-width, initial-scale=1.0" />/>
+    <link rel="icon" type="image/svg+xml" sizes="512x512" href="img/brain.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="msapplication-TileColor" content="#1d232a">
+    <meta name="theme-color" content="#1d232a">
     <script src="https://cdn.jsdelivr.net/npm/headjs@1.0.3/dist/1.0.0/head.min.js"></script>
     <style> body { opacity: 0; } </style>
+    <script>
+        window.addEventListener("load", () => {
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("service-worker.js", { scope: "/" });
+            }
+            window.onoffline = function () {
+                window.location.reload();
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="md:container md:mx-auto md:my-40">
