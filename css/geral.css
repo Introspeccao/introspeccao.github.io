@@ -12,17 +12,17 @@ body {
     }
 }
 
-#lista {
+#listaGrat {
     margin-left: 25px;
 }
 
-#lista > li {
+#listaGrat > li {
     position: relative;
     margin-bottom: 20px;
     padding-right: 50px;
 }
 
-#lista > li > svg.remove {
+#listaGrat > li > svg.remove {
     position: absolute;
     right: 0;
     top: 0;

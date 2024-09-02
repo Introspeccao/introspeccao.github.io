@@ -376,7 +376,7 @@ $(async function () {
         });
 
         if (ide > 0) {
-            $("#imoInputs > label, #imoInputs > label > input").removeClass('max-w-xs');
+            $("#imoInputs > label, #imoInputs > label > input").removeClass('max-w-md');
             $("#editButtons").removeClass('hidden');
 
             //load dos dados

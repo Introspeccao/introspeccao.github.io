@@ -30,7 +30,7 @@ $(function() {
         }).then((result) => {
             if (result.value) {
                 $('#listaPlaceholder').addClass('hidden');
-                $('#lista').append('<li>' + result.value + icon + ' </li>');
+                $('#listaGrat').append('<li>' + result.value + icon + ' </li>');
             }
         });
     });
@@ -38,15 +38,15 @@ $(function() {
     $('#removeAll').on('click', function(e) {
         e.preventDefault();
 
-        $('#lista').html('');
+        $('#listaGrat').html('');
         $('#listaPlaceholder').removeClass('hidden');
     });
 
-    $('#lista').on('click', '.remove', function(e) {
+    $('#listaGrat').on('click', '.remove', function(e) {
         e.preventDefault();
 
         e.target.closest('li').remove();
 
-        if ($('#lista > li').length === 0) $('#listaPlaceholder').removeClass('hidden');
+        if ($('#listaGrat > li').length === 0) $('#listaPlaceholder').removeClass('hidden');
     });
 });
