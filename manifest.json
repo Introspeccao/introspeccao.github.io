@@ -1,9 +1,9 @@
 {
-  "short_name": "Retrospectiva",
-  "name": "Retrospectiva",
+  "short_name": "Introspecção",
+  "name": "Introspecção",
   "icons": [
     {
-      "src": "https://retrospectiva.github.io/img/brain.svg",
+      "src": "https://introspeccao.github.io/img/brain.svg",
       "type": "image/svg+xml",
       "sizes": "512x512"
     }
@@ -15,5 +15,5 @@
   "orientation": "any",
   "display": "fullscreen",
   "theme_color": "#1d232a",
-  "description": "Aplicação de registo de emoções e lista de gratidão"
+  "description": "Aplicação de introspecção com registo de emoções e lista de gratidão"
 }
