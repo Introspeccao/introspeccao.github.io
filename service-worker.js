@@ -49,7 +49,15 @@ self.addEventListener('fetch', event => {
                         return networkResponse;
                     }).catch(() => {
                         // Handle network errors
-                        return caches.match('/offline.html');
+                        return caches.match('/offline.html') // Replace with your offline page path
+                            .then(cachedResponse => {
+                                if (cachedResponse) {
+                                    return cachedResponse;
+                                }
+
+                                // Handle case where offline page is not cached
+                                return fetch('/offline.html'); // Fetch offline page from network as a fallback
+                            });
                     });
                 })
         );
