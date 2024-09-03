@@ -1,98 +1,63 @@
-/*
-Copyright 2015, 2019, 2020, 2021 Google LLC. All Rights Reserved.
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-*/
-
-// Incrementing OFFLINE_VERSION will kick off the install event and force
-// previously cached resources to be updated from the network.
-// This variable is intentionally declared and unused.
-// Add a comment for your linter if you want:
-// eslint-disable-next-line no-unused-vars
-const OFFLINE_VERSION = 1;
-const CACHE_NAME = "offline";
-// Customize this with a different URL if needed.
-const OFFLINE_URL = "offline.html";
-
-self.addEventListener("install", (event) => {
+self.addEventListener('install', event => {
     event.waitUntil(
-        (async () => {
-            const cache = await caches.open(CACHE_NAME);
-            // Setting {cache: 'reload'} in the new request will ensure that the
-            // response isn't fulfilled from the HTTP cache; i.e., it will be from
-            // the network.
-            await cache.add(new Request(OFFLINE_URL, { cache: "reload" }));
-        })()
+        caches.open('static-cache')
+            .then(cache => {
+                return cache.addAll([
+                    '/',
+                    'index.html',
+                    'offline.html',
+                    'emocoes.html',
+                    'emocao.html',
+                    'lista-gratidao.html',
+                    'css/geral.css',
+                    'js/emocoes.js',
+                    'js/gratidao.js',
+                    'img/brain.svg',
+                    '//cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css',
+                    '//cdn.tailwindcss.com',
+                    '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css',
+                    '//cdn.jsdelivr.net/npm/dexie@3/dist/dexie.js',
+                    '//cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
+                    '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js',
+                    '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/pdfmake.min.js',
+                    '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/vfs_fonts.js',
+                    '//cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'
+                ]);
+            })
     );
-    // Force the waiting service worker to become the active service worker.
-    self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
-    event.waitUntil(
-        (async () => {
-            // Enable navigation preload if it's supported.
-            // See https://developers.google.com/web/updates/2017/02/navigation-preload
-            if ("navigationPreload" in self.registration) {
-                await self.registration.navigationPreload.enable();
-            }
-        })()
-    );
+self.addEventListener('fetch', event => {
+    const request = event.request;
+    const url = new URL(request.url);
 
-    // Tell the active service worker to take control of the page immediately.
-    self.clients.claim();
-});
-
-/*self.addEventListener("check-connection", async (event) => {
-    try {
-        const networkResponse = await fetch(event.request);
-        if (networkResponse) window.location.reload();
-    } catch (error) {
-        set
-    }
-});*/
-
-/*self.addEventListener("fetch", (event) => {
-    // We only want to call event.respondWith() if this is a navigation request
-    // for an HTML page.
-    if (event.request.mode === "navigate") {
+    if (url.origin === self.location.origin) {
         event.respondWith(
-            (async () => {
-                try {
-                    // First, try to use the navigation preload response if it's supported.
-                    const preloadResponse = await event.preloadResponse;
-                    if (preloadResponse) {
-                        return preloadResponse;
+            caches.match(request)
+                .then(cachedResponse => {
+                    if (cachedResponse) {
+                        return cachedResponse;
                     }
 
-                    // Always try the network first.
-                    const networkResponse = await fetch(event.request);
-                    return networkResponse;
-                } catch (error) {
-                    // catch is only triggered if an exception is thrown, which is likely
-                    // due to a network error.
-                    // If fetch() returns a valid HTTP response with a response code in
-                    // the 4xx or 5xx range, the catch() will NOT be called.
-                    console.log("Fetch failed; returning offline page instead.", error);
+                    return fetch(request).then(networkResponse => {
+                        if (networkResponse.status === 200) {
+                            caches.open('static-cache').then(cache => {
+                                cache.put(request, networkResponse.clone());
+                            });
 
-                    const cache = await caches.open(CACHE_NAME);
-                    const cachedResponse = await cache.match(OFFLINE_URL);
-                    return cachedResponse;
-                }
-            })()
+                            // Check if the content has changed
+                            if (cachedResponse && networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag')) {
+                                // Content has changed, refresh the page
+                                location.reload();
+                            }
+                        }
+
+                        return networkResponse;
+                    }).catch(() => {
+                        // Handle network errors
+                        return caches.match('/offline.html');
+                    });
+                })
         );
     }
-
-    // If our if() condition is false, then this fetch handler won't intercept the
-    // request. If there are any other fetch handlers registered, they will get a
-    // chance to call event.respondWith(). If no fetch handlers call
-    // event.respondWith(), the request will be handled by the browser as if there
-    // were no service worker involvement.
-});*/
+});
