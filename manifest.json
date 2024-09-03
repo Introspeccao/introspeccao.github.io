@@ -5,6 +5,11 @@
     {
       "src": "https://introspeccao.github.io/img/brain.svg",
       "type": "image/svg+xml",
+      "sizes": "1376x1376"
+    },
+    {
+      "src": "https://introspeccao.github.io/img/brain.png",
+      "type": "image/png",
       "sizes": "512x512"
     }
   ],
