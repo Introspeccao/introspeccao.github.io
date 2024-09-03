@@ -44,12 +44,6 @@ self.addEventListener('fetch', event => {
                             caches.open('static-cache').then(cache => {
                                 cache.put(request, networkResponse.clone());
                             });
-
-                            // Check if the content has changed
-                            if (cachedResponse && networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag')) {
-                                // Content has changed, refresh the page
-                                location.reload();
-                            }
                         }
 
                         return networkResponse;

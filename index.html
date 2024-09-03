@@ -10,14 +10,15 @@
     <script src="https://cdn.jsdelivr.net/npm/headjs@1.0.3/dist/1.0.0/head.min.js"></script>
     <style> body { opacity: 0; } </style>
     <script>
-        window.addEventListener("load", () => {
-            if ("serviceWorker" in navigator) {
-                navigator.serviceWorker.register("service-worker.js", { scope: "/" });
-            }
-            window.onoffline = function () {
-                window.location.reload();
-            }
-        });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service worker registered:', registration);
+                })
+                .catch(error => {
+                    console.error('Service worker registration failed:', error);
+                });
+        }
     </script>
 </head>
 <body>
