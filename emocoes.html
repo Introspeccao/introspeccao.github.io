@@ -21,7 +21,7 @@
         }
     </script>
 </head>
-<body class="md:bg-secondary-content">
+<body>
     <div class="md:container md:mx-auto md:my-40">
         <header class="bg-base-300 md:rounded-t-md">
             <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
@@ -72,20 +72,16 @@
     </div>
     <script>
         head.js(
-            '//cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css',
-            '//cdn.tailwindcss.com',
+            'css/tailwind.min.css',
             '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css',
-            '//cdn.jsdelivr.net/npm/dexie@3/dist/dexie.js',
+            '//cdn.jsdelivr.net/npm/dexie@4.0.8/dist/dexie.min.js',
             '//cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
             '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js',
             '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/pdfmake.min.js',
             '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/vfs_fonts.js',
             '//cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
             function () {
-                head.js(
-                    'css/geral.css',
-                    'js/emocoes.js'
-                );
+                head.js('js/emocoes.js');
             }
         );
     </script>
