@@ -42,20 +42,20 @@ self.addEventListener('fetch', event => {
                             caches.open('static-cache').then(cache => {
                                 cache.put(request, networkResponse.clone());
                             });
+
+                            // Check if the content has changed
+                            if (cachedResponse && networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag')) {
+                                // Content has changed, refresh the page
+                                location.reload();
+                            }
+
+                            return networkResponse.clone(); // Clone the response before returning it
                         }
 
                         return networkResponse;
                     }).catch(() => {
                         // Handle network errors
-                        return caches.match('/offline.html') // Replace with your offline page path
-                            .then(cachedResponse => {
-                                if (cachedResponse) {
-                                    return cachedResponse;
-                                }
-
-                                // Handle case where offline page is not cached
-                                return fetch('/offline.html'); // Fetch offline page from network as a fallback
-                            });
+                        return caches.match('/offline.html');
                     });
                 })
         );
