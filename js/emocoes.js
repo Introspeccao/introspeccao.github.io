@@ -239,6 +239,12 @@ $(async function () {
             }, 400);
         }
 
+        /*if ('Notification' in window) {
+            if (Notification.permission === 'granted') {
+                $("#lembrete").removeClass('hidden');
+            }
+        }*/
+
         $("#removeAll").on("click", function (e) {
             e.preventDefault();
 
@@ -338,6 +344,44 @@ $(async function () {
             };
 
             reader.readAsText(file);
+        });
+        $("#lembrete").on("click", async function (e) {
+            e.preventDefault();
+
+            let handle    = '';
+            const options = {};
+            for (let i = 0; i<24; i++) {
+                handle = String(i) + ':00';
+                options[handle] = handle;
+                handle = String(i) + ':30';
+                options[handle] = handle;
+            }
+
+            const { value: horarios } = await Swal.fire({
+                customClass: 'swal-lembrete',
+                title: "Escolha os horários",
+                input: "select",
+                inputAttributes: {
+                    multiple: true
+                },
+                preConfirm: () => {
+                    let options = [];
+
+                    const seleted = document.getElementById("swal2-select").selectedOptions
+                    seleted.forEach((option) => {
+                        options.push(option.value);
+                    });
+
+                    return options;
+                },
+                inputOptions: options,
+                showCancelButton: true,
+                confirmButtonText: "Definir",
+                cancelButtonText: "Cancelar",
+                footer: 'Pressione CTRL / Command para permitir seleccionar vários'
+            });
+
+            console.log(horarios);
         });
     }
 

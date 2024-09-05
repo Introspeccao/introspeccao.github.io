@@ -32,3 +32,8 @@ body {
     top: 0;
     cursor: pointer;
 }
+
+.swal-lembrete .swal2-select {
+    height: 65vh;
+    max-height: 1100px;
+}

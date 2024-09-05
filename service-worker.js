@@ -25,39 +25,55 @@ self.addEventListener('install', event => {
     );
 });
 
+self.addEventListener('activate', event => {
+    setInterval(() => {
+        if (Notification.permission === 'granted') {
+            /*const notification = new Notification('Notification Title', {
+                body: 'This is a notification from your service worker',
+                icon: '/path/to/your/icon.png'
+            });
+
+            notification.addEventListener('click', event => {
+                // Handle notification click
+                console.log('Notification clicked');
+            });*/
+        } else {
+            Notification.requestPermission();
+        }
+    }, 1000); // Send notifications every minute (adjust the interval as needed)
+});
+
 self.addEventListener('fetch', event => {
     const request = event.request;
     const url = new URL(request.url);
 
     if (url.origin === self.location.origin) {
         event.respondWith(
-            caches.match(request)
-                .then(cachedResponse => {
-                    if (cachedResponse) {
-                        return cachedResponse;
-                    }
+            caches.match(request).then(cachedResponse => {
 
-                    return fetch(request).then(networkResponse => {
-                        if (networkResponse.status === 200) {
+                return fetch(request).then(networkResponse => {
+                    if (networkResponse.status >= 200 && networkResponse.status < 300) {
+                        // Check if the content has changed
+                        if (cachedResponse && networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag')) {
                             caches.open('static-cache').then(cache => {
                                 cache.put(request, networkResponse.clone());
                             });
-
-                            // Check if the content has changed
-                            if (cachedResponse && networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag')) {
-                                // Content has changed, refresh the page
-                                location.reload();
-                            }
-
-                            return networkResponse.clone(); // Clone the response before returning it
                         }
 
-                        return networkResponse;
-                    }).catch(() => {
-                        // Handle network errors
+                        return networkResponse.clone(); // Clone the response before returning it
+                    }
+
+                    return networkResponse;
+                }).catch(() => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    else {
+                        // fallback offline page
                         return caches.match('/offline.html');
-                    });
-                })
+                    }
+                });
+            })
         );
     }
 });
