@@ -25,6 +25,21 @@ self.addEventListener('install', event => {
     );
 });
 
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+
+    event.waitUntil(
+        clients.matchAll({
+            type: "window",
+        })
+            .then(clientList => {
+                if (clientList.length) {
+                    clientList[0].focus();
+                }
+            })
+    );
+});
+
 const notifyEmo = function () {
     self.clients.matchAll({
         includeUncontrolled: true,

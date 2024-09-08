@@ -17,13 +17,10 @@ if ('serviceWorker' in navigator) {
                         const hora = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
                         if (horarios && horarios.indexOf(hora) !== -1) {
-                            const notification = new Notification("Lembrete", {
+                            registration.showNotification("Lembrete", {
                                 body: "Sentiu uma emoção recentemente que queira registar?",
                                 icon: "img/brain.svg",
                                 requireInteraction: true
-                            });
-                            notification.addEventListener('click', event => {
-                                window.focus();
                             });
                         }
                     }
