@@ -3,24 +3,14 @@
     <title>Introspecção - Registo de emoções</title>
     <meta charset="UTF-8">
     <meta name="description" content="Aplicação de introspecção com registo de emoções e lista de gratidão.">
-    <meta name="viewport" content="width=devide-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" sizes="512x512" href="https://introspeccao.github.io/img/brain.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="msapplication-TileColor" content="#1d232a">
     <meta name="theme-color" content="#1d232a">
     <script src="https://cdn.jsdelivr.net/npm/headjs@1.0.3/dist/1.0.0/head.min.js"></script>
     <style> body { opacity: 0; } </style>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(registration => {
-                    console.log('Service worker registered:', registration);
-                })
-                .catch(error => {
-                    console.error('Service worker registration failed:', error);
-                });
-        }
-    </script>
+    <script src="js/worker-logic.js"></script>
 </head>
 <body>
     <div class="md:container md:mx-auto md:my-40">
@@ -46,7 +36,7 @@
                                 tabindex="0"
                                 class="menu dropdown-content bg-base-200 rounded-box z-40 mt-4 w-52 p-2 shadow">
                             <li><a href="/emocao.html">Adicionar</a></li>
-                            <li><a id="lembrete" class="hidden">Lembrete</a></li>
+                            <li><a id="lembrete">Lembrete</a></li>
                             <li><a id="export">Exportar</a></li>
                             <li><a id="import">Importar</a></li>
                             <li><a id="removeAll">Remover todos</a></li>

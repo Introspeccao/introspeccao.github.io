@@ -239,11 +239,11 @@ $(async function () {
             }, 400);
         }
 
-        /*if ('Notification' in window) {
+        if ('Notification' in window) {
             if (Notification.permission === 'granted') {
                 $("#lembrete").removeClass('hidden');
             }
-        }*/
+        }
 
         $("#removeAll").on("click", function (e) {
             e.preventDefault();
@@ -348,6 +348,14 @@ $(async function () {
         $("#lembrete").on("click", async function (e) {
             e.preventDefault();
 
+            if (!('Notification' in window && Notification.permission === 'granted')) {
+                Toast.fire({
+                    icon: "warning",
+                    title: "Tem de ativar as notificações para conseguir utilizar lembretes."
+                });
+                return;
+            }
+
             let handle    = '';
             const options = {};
             for (let i = 0; i<24; i++) {
@@ -356,6 +364,15 @@ $(async function () {
                 handle = String(i) + ':30';
                 options[handle] = handle;
             }
+
+            let footerNote  = '';
+            const userAgent = navigator.userAgent;
+            if (userAgent.indexOf('Macintosh') !== -1 && userAgent.indexOf('Mac OS') !== -1) {
+                footerNote = 'Pressione a tecla Command para seleccionar vários.<br>';
+            } else if (userAgent.indexOf('Windows') !== -1 || userAgent.indexOf('Linux') !== -1) {
+                footerNote = 'Pressione a tecla CTRL para seleccionar vários.<br>';
+            }
+            footerNote += 'Se definir sem horários desactiva os lembretes.';
 
             const { value: horarios } = await Swal.fire({
                 customClass: 'swal-lembrete',
@@ -367,8 +384,8 @@ $(async function () {
                 preConfirm: () => {
                     let options = [];
 
-                    const seleted = document.getElementById("swal2-select").selectedOptions
-                    seleted.forEach((option) => {
+                    const selected = Object.values(document.getElementById("swal2-select").selectedOptions);
+                    selected.forEach((option) => {
                         options.push(option.value);
                     });
 
@@ -378,10 +395,10 @@ $(async function () {
                 showCancelButton: true,
                 confirmButtonText: "Definir",
                 cancelButtonText: "Cancelar",
-                footer: 'Pressione CTRL / Command para permitir seleccionar vários'
+                footer: footerNote
             });
 
-            console.log(horarios);
+            localStorage.setItem('horarios', JSON.stringify(horarios));
         });
     }
 
