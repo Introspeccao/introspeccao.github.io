@@ -313,7 +313,8 @@ $(async function () {
                 input: "file",
                 inputAttributes: {
                     "accept": "application/json",
-                    "aria-label": "Importe o seu ficheiro JSON"
+                    "aria-label": "Importe o seu ficheiro JSON",
+                    "required": true
                 }
             });
 
@@ -343,7 +344,7 @@ $(async function () {
                 }
             };
 
-            reader.readAsText(file);
+            if (file) reader.readAsText(file);
         });
         $("#lembrete").on("click", async function (e) {
             e.preventDefault();
