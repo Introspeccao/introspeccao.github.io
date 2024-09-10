@@ -366,7 +366,10 @@ $(async function () {
             const userAgent = navigator.userAgent;
             if (userAgent.indexOf('Macintosh') !== -1 && userAgent.indexOf('Mac OS') !== -1) {
                 footerNote = 'Pressione a tecla Command para seleccionar vários.<br>';
-            } else if (userAgent.indexOf('Windows') !== -1 || userAgent.indexOf('Linux') !== -1) {
+            } else if (
+                   (userAgent.indexOf('Windows') !== -1 || userAgent.indexOf('Linux') !== -1)
+                && userAgent.indexOf('android') === -1
+            ) {
                 footerNote = 'Pressione a tecla CTRL para seleccionar vários.<br>';
             }
             footerNote += 'Se definir sem horários desactiva os lembretes.';
