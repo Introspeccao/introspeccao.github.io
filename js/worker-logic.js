@@ -1,13 +1,11 @@
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js').then(async registration => {
+    navigator.serviceWorker.register('service-worker.js').then(registration => {
         if ('Notification' in window) {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    registration.active.postMessage({
-                        type: 'LEMBRETE_EMO_INIT'
-                    });
-                }
-            });
+            if (Notification.permission === 'granted' && registration.active) {
+                registration.active.postMessage({
+                    type: 'LEMBRETE_EMO_INIT'
+                });
+            }
 
             navigator.serviceWorker.onmessage = (event) => {
                 if (event.data && event.data.type === 'LEMBRETE_EMO') {

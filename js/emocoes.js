@@ -361,9 +361,21 @@ $(async function () {
             e.preventDefault();
 
             if (!('Notification' in window && Notification.permission === 'granted')) {
-                Toast.fire({
-                    icon: "warning",
-                    title: "Tem de ativar as notificações para conseguir utilizar lembretes."
+                Swal.fire({
+                    title: "Ativar notificações",
+                    text: "Tem de ativar as notificações antes de conseguir definir lembretes.",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "Ativar",
+                    cancelButtonText: "Cancelar"
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        Notification.requestPermission().then((permission) => {
+                            if (permission === 'granted') {
+                                window.location.reload();
+                            }
+                        });
+                    }
                 });
                 return;
             }

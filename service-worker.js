@@ -1,6 +1,6 @@
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open('static-cache').then(cache => {
+        self.skipWaiting().then(() => caches.open('static-cache').then(cache => {
             return cache.addAll([
                 '/',
                 '/index.html',
@@ -21,7 +21,7 @@ self.addEventListener('install', event => {
                 '//cdn.jsdelivr.net/npm/pdfmake@0.2.12/build/vfs_fonts.js',
                 '//cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'
             ]);
-        })
+        }))
     );
 });
 
