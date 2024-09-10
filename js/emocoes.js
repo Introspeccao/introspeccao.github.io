@@ -165,7 +165,7 @@ $(async function () {
             '     <h3 class="font-semibold mt-6">O que pensei sobre mim?</h3>\n' +
             '     <p class="w-full">{PENSEI}</p>\n' +
             '     <h3 class="font-semibold mt-6">Cor associada:</h3>\n' +
-            '     <span class="cor-lista mt-2 w-full md:w-80 h-10 rounded-md block" style="background-color: {COR};"></span>\n' +
+            '     <span class="cor-lista mt-2 w-full md:w-80 h-10 rounded-md block border-2 border-base-content" style="background-color: {COR};"></span>\n' +
             '     <div class="flex justify-end mt-8" data-ide="{IDE}">\n' +
             '       <button class="btn btn-secondary mr-4 apagar">Apagar</button>\n' +
             '       <button class="btn btn-primary editar">Editar</button>\n' +
@@ -206,8 +206,6 @@ $(async function () {
                 text: "Irá apagar o registo definitivamente",
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
                 confirmButtonText: "Apagar",
                 cancelButtonText: "Cancelar"
             }).then(async (result) => {
@@ -253,8 +251,6 @@ $(async function () {
                 text: "Irá apagar TODOS os registos definitivamente",
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
                 confirmButtonText: "Apagar",
                 cancelButtonText: "Cancelar"
             }).then(async (result) => {
@@ -457,8 +453,6 @@ $(async function () {
                     text: "Irá apagar o registo definitivamente",
                     icon: "question",
                     showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
                     confirmButtonText: "Apagar",
                     cancelButtonText: "Cancelar"
                 }).then(async (result) => {
