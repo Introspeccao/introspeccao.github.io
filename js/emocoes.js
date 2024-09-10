@@ -9,6 +9,21 @@ $(async function () {
         console.error("DB open failed: " + e.stack);
     });
 
+    const checkUserAgent = function(check) {
+        const userAgent = navigator.userAgent.toLowerCase();
+
+        switch (check) {
+            case 'mobile':
+                return /mobile|tablet|android|ios|iphone|ipad|ipod/.test(userAgent);
+            case 'mac':
+                return /macintosh|mac os/.test(userAgent);
+            case 'pc':
+                return /windows|linux/.test(userAgent);
+        }
+
+        return false;
+    }
+
     const formatData = function (date) {
         return date.toISOString().replace('T', ' ').replace(/\:\d{2}\.\w+$/gm, '');
     }
@@ -364,18 +379,15 @@ $(async function () {
 
             let footerNote  = '';
             const userAgent = navigator.userAgent;
-            if (userAgent.indexOf('Macintosh') !== -1 && userAgent.indexOf('Mac OS') !== -1) {
+            if (checkUserAgent('mac')) {
                 footerNote = 'Pressione a tecla Command para seleccionar vários.<br>';
-            } else if (
-                   (userAgent.indexOf('Windows') !== -1 || userAgent.indexOf('Linux') !== -1)
-                && userAgent.indexOf('android') === -1
-            ) {
+            } else if (checkUserAgent('pc') && !checkUserAgent('mobile')) {
                 footerNote = 'Pressione a tecla CTRL para seleccionar vários.<br>';
             }
             footerNote += 'Se definir sem horários desactiva os lembretes.';
 
             const { value: horarios } = await Swal.fire({
-                customClass: 'swal-lembrete',
+                customClass: (checkUserAgent('mobile') ? '' : 'swal-lembrete'),
                 title: "Escolha os horários",
                 input: "select",
                 inputAttributes: {
