@@ -29,35 +29,65 @@ self.addEventListener('notificationclick', event => {
     event.notification.close();
 
     event.waitUntil(
-        clients.matchAll({
+        self.clients.matchAll({
             type: "window",
+            includeUncontrolled: true
+        }).then(clientList => {
+            if (clientList.length) {
+                clientList[0].focus();
+            }
         })
-            .then(clientList => {
-                if (clientList.length) {
-                    clientList[0].focus();
-                }
-            })
     );
 });
 
-const notifyEmo = function () {
+const sendMessage = (message, error) => {
     self.clients.matchAll({
-        includeUncontrolled: true,
         type: 'window',
+        includeUncontrolled: true
     }).then((clients) => {
         if (clients && clients.length) {
-            clients[0].postMessage({
-                type: 'LEMBRETE_EMO'
-            });
+            clients[0].postMessage((error ? { err: message } : { msg: message }));
         }
     });
+}
+
+const notifyEmo = function () {
+    try {
+        const db     = indexedDB.open('retro_emocoes');
+        db.onsuccess = function(event) {
+            const db            = event.target.result;
+            const transaction   = db.transaction('horas', 'readonly');
+            const store         = transaction.objectStore('horas');
+            const getAllRequest = store.getAll();
+
+            getAllRequest.onsuccess = function(event) {
+                const horarios = event.target.result.map((item) => { return item.hora; });
+                const now      = new Date();
+                const hora     = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+                if (horarios && horarios.indexOf(hora) !== -1) {
+                    sendMessage.call(this, "Bateu na hora!");
+                    self.registration.showNotification("Lembrete", {
+                        body: "Sentiu uma emoção recentemente que queira registar?",
+                        icon: "https://introspeccao.github.io/img/brain.svg",
+                        requireInteraction: true
+                    }).catch((error) => {
+                        sendMessage.call(this, error, true);
+                    });
+                }
+            }
+        }
+    }
+    catch (e) {
+    }
 }
 
 let interval;
 self.addEventListener('message', event => {
     if (event.data && event.data.type === 'LEMBRETE_EMO_INIT') {
         if (interval) clearInterval(interval);
-        interval = setInterval(notifyEmo, 60000); //every minute
+        notifyEmo.call(this);
+        interval = setInterval(notifyEmo.bind(this), 60000); //every minute
     }
 });
 

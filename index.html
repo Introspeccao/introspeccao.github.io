@@ -11,7 +11,6 @@
     <meta name="theme-color" content="#1d232a">
     <script src="https://cdn.jsdelivr.net/npm/headjs@1.0.3/dist/1.0.0/head.min.js"></script>
     <style> body { opacity: 0; } </style>
-    <script src="js/worker-logic.js"></script>
 </head>
 <body>
     <div class="md:container md:mx-auto md:my-40">
@@ -52,7 +51,10 @@
         </div>
     </div>
     <script>
-        head.js('css/tailwind.min.css');
+        head.js(
+            'css/tailwind.min.css',
+            'js/worker-logic.js'
+        );
     </script>
 </body>
 </html>

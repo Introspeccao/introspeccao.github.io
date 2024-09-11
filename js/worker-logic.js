@@ -1,30 +1,21 @@
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js').then(registration => {
-        if ('Notification' in window) {
-            if (Notification.permission === 'granted' && registration.active) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data.msg) {
+                    console.log('Message from worker:', event.data.msg);
+                }
+                else if (event.data.err) {
+                    console.error('Error from worker:', event.data.err);
+                }
+            });
+
+            // Wait for service worker activation
+            navigator.serviceWorker.ready.then( registration => {
                 registration.active.postMessage({
                     type: 'LEMBRETE_EMO_INIT'
                 });
-            }
-
-            navigator.serviceWorker.onmessage = (event) => {
-                if (event.data && event.data.type === 'LEMBRETE_EMO') {
-                    try {
-                        const horarios = JSON.parse(localStorage.getItem('horarios'));
-                        const now = new Date();
-                        const hora = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-
-                        if (horarios && horarios.indexOf(hora) !== -1) {
-                            registration.showNotification("Lembrete", {
-                                body: "Sentiu uma emoção recentemente que queira registar?",
-                                icon: "img/brain.svg",
-                                requireInteraction: true
-                            });
-                        }
-                    }
-                    catch (e) {}
-                }
-            };
+            });
         }
     });
 }
