@@ -1,7 +1,7 @@
 $(async function () {
     const db = new Dexie('retro_emocoes');
 
-    db.version(1).stores({
+    db.version(2).stores({
         emocoes: '++id, data, emocao',
         horas: 'hora'
     });
