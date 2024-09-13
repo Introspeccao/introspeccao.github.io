@@ -53,30 +53,30 @@ const sendMessage = (message, error) => {
 
 const notifyEmo = function () {
     try {
-        const db     = indexedDB.open('retro_emocoes');
-        db.onsuccess = function(event) {
-            const db            = event.target.result;
-            const transaction   = db.transaction('horas', 'readonly');
-            const store         = transaction.objectStore('horas');
-            const getAllRequest = store.getAll();
+        indexedDB.open('retro_emocoes').then((db) => {
+            if (db.objectStoreNames.contains('horas')) {
+                const transaction   = db.transaction('horas', 'readonly');
+                const store         = transaction.objectStore('horas');
+                const getAllRequest = store.getAll();
 
-            getAllRequest.onsuccess = function(event) {
-                const horarios = event.target.result.map((item) => { return item.hora; });
-                const now      = new Date();
-                const hora     = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                getAllRequest.onsuccess = function(event) {
+                    const horarios = event.target.result.map((item) => { return item.hora; });
+                    const now      = new Date();
+                    const hora     = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-                if (horarios && horarios.indexOf(hora) !== -1) {
-                    sendMessage.call(this, "Bateu na hora!");
-                    self.registration.showNotification("Lembrete", {
-                        body: "Sentiu uma emoção recentemente que queira registar?",
-                        icon: "https://introspeccao.github.io/img/brain.svg",
-                        requireInteraction: true
-                    }).catch((error) => {
-                        sendMessage.call(this, error, true);
-                    });
+                    if (horarios && horarios.indexOf(hora) !== -1) {
+                        sendMessage.call(this, "Bateu na hora!");
+                        self.registration.showNotification("Lembrete", {
+                            body: "Sentiu uma emoção recentemente que queira registar?",
+                            icon: "https://introspeccao.github.io/img/brain.svg",
+                            requireInteraction: true
+                        }).catch((error) => {
+                            sendMessage.call(this, error, true);
+                        });
+                    }
                 }
             }
-        }
+        });
     }
     catch (e) {
     }
