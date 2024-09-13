@@ -78,6 +78,9 @@ const notifyEmo = function () {
                     db.close();
                 }
             }
+            else {
+                db.close();
+            }
         });
     }
     catch (e) {
