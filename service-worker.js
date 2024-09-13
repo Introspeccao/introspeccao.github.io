@@ -74,6 +74,8 @@ const notifyEmo = function () {
                             sendMessage.call(this, error, true);
                         });
                     }
+
+                    db.close();
                 }
             }
         });
