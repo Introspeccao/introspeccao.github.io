@@ -53,7 +53,7 @@ const sendMessage = (message, error) => {
 
 const notifyEmo = function () {
     try {
-        indexedDB.open('retro_emocoes').then((db) => {
+        indexedDB.open('retro_emocoes', 2).then((db) => {
             if (db.objectStoreNames.contains('horas')) {
                 const transaction   = db.transaction('horas', 'readonly');
                 const store         = transaction.objectStore('horas');
@@ -68,8 +68,7 @@ const notifyEmo = function () {
                         sendMessage.call(this, "Bateu na hora!");
                         self.registration.showNotification("Lembrete", {
                             body: "Sentiu uma emoção recentemente que queira registar?",
-                            icon: "https://introspeccao.github.io/img/brain.svg",
-                            requireInteraction: true
+                            icon: "https://introspeccao.github.io/img/brain.svg"
                         }).catch((error) => {
                             sendMessage.call(this, error, true);
                         });

@@ -17,8 +17,8 @@
     <div class="md:container md:mx-auto md:my-40">
         <header class="bg-neutral md:rounded-t-md">
             <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
-                <div class="flex flex-1">
-                    <a href="/" class="-m-1.5 p-1.5" title="Ir para o início">
+                <div class="flex flex-1 tooltip tooltip-left" data-tit="Ir para o início">
+                    <a href="/" class="-m-1.5 p-1.5 ">
                         <span class="sr-only">Introspecção</span>
                         <img class="h-8 w-auto" src="img/brain.svg" alt="">
                     </a>
@@ -26,7 +26,7 @@
                 <div class="flex">
                     <h1 class="text-lg font-semibold leading-6 text-neutral-content">Registo de emoções</h1>
                 </div>
-                <div class="flex flex-1 justify-end">
+                <div class="flex flex-1 justify-end tooltip">
                     <a id="voltar" href="/emocoes.html" class="-m-1.5 p-1.5">
                         <svg class="h-8 w-auto fill-slate-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM13.92 16.13H9C8.59 16.13 8.25 15.79 8.25 15.38C8.25 14.97 8.59 14.63 9 14.63H13.92C15.2 14.63 16.25 13.59 16.25 12.3C16.25 11.01 15.21 9.97 13.92 9.97H8.85L9.11 10.23C9.4 10.53 9.4 11 9.1 11.3C8.95 11.45 8.76 11.52 8.57 11.52C8.38 11.52 8.19 11.45 8.04 11.3L6.47 9.72C6.18 9.43 6.18 8.95 6.47 8.66L8.04 7.09C8.33 6.8 8.81 6.8 9.1 7.09C9.39 7.38 9.39 7.86 9.1 8.15L8.77 8.48H13.92C16.03 8.48 17.75 10.2 17.75 12.31C17.75 14.42 16.03 16.13 13.92 16.13Z"/>
@@ -52,12 +52,22 @@
                     <label class="form-control w-full max-w-md">
                         <div class="label">
                             <span class="label-text font-semibold">Qual foi a emoção?</span>
+                            <span class="tooltip tooltip-left" data-tip="Se não conseguir identificar claramente, seja criativo a nomear o que sentiu">
+                                <svg class="fill-slate-400 cursor-pointer h-5 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75ZM12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z"/>
+                                </svg>
+                            </span>
                         </div>
                         <input id="emocao" required type="emocao" name="emocao" class="input input-bordered w-full" />
                     </label>
                     <label class="form-control w-full max-w-md my-4">
                         <div class="label">
                             <span class="label-text font-semibold">Qual a cor ilustrativa?</span>
+                            <span class="tooltip tooltip-left" data-tip="Uma cor que você associaria à emoção que sentiu">
+                                <svg class="fill-slate-400 cursor-pointer h-5 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75ZM12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z"/>
+                                </svg>
+                            </span>
                         </div>
                         <input id="cor" type="color" name="cor" value="#ffffff" class="input input-bordered w-full">
                     </label>
@@ -66,19 +76,34 @@
             <div class="divider"></div>
             <label class="form-control w-full mt-4">
                 <div class="label">
-                    <span class="label-text font-semibold">Como estava quando senti?</span>
+                    <span class="label-text font-semibold">O que fazia quando sentiu?</span>
+                    <span class="tooltip tooltip-left" data-tip="O contexto, a situação em que me encontrava quando sentiu a emoção">
+                        <svg class="fill-slate-400 cursor-pointer h-5 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75ZM12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z"/>
+                        </svg>
+                    </span>
                 </div>
                 <textarea required rows="4" class="textarea textarea-bordered w-full" name="estava" id="estava"></textarea>
             </label>
             <label class="form-control w-full mt-4">
                 <div class="label">
-                    <span class="label-text font-semibold">O que senti no meu corpo?</span>
+                    <span class="label-text font-semibold">O que sentiu no seu corpo?</span>
+                    <span class="tooltip tooltip-left" data-tip="Que sensações fisicas podem ter surgido no seguimento da emoção, exemplo: Aperto no peito, nó na garganta, etc...">
+                        <svg class="fill-slate-400 cursor-pointer h-5 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75ZM12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z"/>
+                        </svg>
+                    </span>
                 </div>
                 <textarea required rows="4" class="textarea textarea-bordered w-full" name="senti" id="senti"></textarea>
             </label>
             <label class="form-control w-full mt-4">
                 <div class="label">
-                    <span class="label-text font-semibold">O que pensei sobre mim?</span>
+                    <span class="label-text font-semibold">O que pensou sobre si?</span>
+                    <span class="tooltip tooltip-left" data-tip="Que pensamentos surgiram sobre si no momento, geralmente com conotação negativa">
+                        <svg class="fill-slate-400 cursor-pointer h-5 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75ZM12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z"/>
+                        </svg>
+                    </span>
                 </div>
                 <textarea required rows="4" class="textarea textarea-bordered w-full" name="pensei" id="pensei"></textarea>
             </label>
@@ -98,6 +123,7 @@
             '//cdn.jsdelivr.net/npm/dexie@4.0.8/dist/dexie.min.js',
             '//cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
             '//cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js',
+            '//cdn.jsdelivr.net/npm/daisyui@2.51.0/dist/daisyui.min.js',
             function () {
                 head.js('js/emocoes.js');
             }

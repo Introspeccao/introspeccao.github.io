@@ -59,11 +59,11 @@ $(async function () {
                     ]
                 ]
             });
-            docDefinition.content.push({ text: 'Como estava quando senti?', style: 'header' });
+            docDefinition.content.push({ text: 'O que fazia quando sentiu?', style: 'header' });
             docDefinition.content.push({ text: emo.estava, style: 'normalText', margin: [0, 0, 0, 20] });
-            docDefinition.content.push({ text: 'O que senti no meu corpo?', style: 'header' });
+            docDefinition.content.push({ text: 'O que sentiu no seu corpo?', style: 'header' });
             docDefinition.content.push({ text: emo.senti, style: 'normalText', margin: [0, 0, 0, 20] });
-            docDefinition.content.push({ text: 'O que pensei sobre mim?', style: 'header' });
+            docDefinition.content.push({ text: 'O que pensou sobre si?', style: 'header' });
             if (index < (emocoes.length - 1)) {
                 docDefinition.content.push({ text: emo.pensei, style: 'normalText', pageBreak: 'after' });
             }
@@ -93,7 +93,7 @@ $(async function () {
         const worksheet = XLSX.utils.json_to_sheet(rows);
         XLSX.utils.sheet_add_aoa(
             worksheet,
-            [["Data", "Emoção", "Cor", "Como estava quando senti?", "O que senti no meu corpo?", "O que pensei sobre mim?"]],
+            [["Data", "Emoção", "Cor", "O que fazia quando sentiu?", "O que sentiu no seu corpo?", "O que pensou sobre si?"]],
             { origin: "A1" }
         );
 
@@ -174,11 +174,11 @@ $(async function () {
             '  <input type="checkbox" name="accordion-emocao" />\n' +
             '  <div class="collapse-title text-md font-semibold">{DATA} - {EMO}</div>\n' +
             '  <div class="collapse-content">\n' +
-            '     <h3 class="font-semibold">Como estava quando senti?</h3>\n' +
+            '     <h3 class="font-semibold">O que fazia quando sentiu?</h3>\n' +
             '     <p class="w-full">{ESTAVA}</p>\n' +
-            '     <h3 class="font-semibold mt-6">O que senti no meu corpo?</h3>\n' +
+            '     <h3 class="font-semibold mt-6">O que sentiu no seu corpo?</h3>\n' +
             '     <p class="w-full">{SENTI}</p>\n' +
-            '     <h3 class="font-semibold mt-6">O que pensei sobre mim?</h3>\n' +
+            '     <h3 class="font-semibold mt-6">O que pensou sobre si?</h3>\n' +
             '     <p class="w-full">{PENSEI}</p>\n' +
             '     <h3 class="font-semibold mt-6">Cor associada:</h3>\n' +
             '     <span class="cor-lista mt-2 w-full md:w-80 h-10 rounded-md block border-2 border-base-content" style="background-color: {COR};"></span>\n' +
